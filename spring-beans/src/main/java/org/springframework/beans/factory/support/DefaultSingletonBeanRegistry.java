@@ -200,6 +200,11 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
+	 *  理解为三级缓存
+	 * singletonObjects：单例对象的cache
+	 * singletonFactories ： 单例对象工厂的cache
+	 * earlySingletonObjects ：提前暴光的单例对象的Cache
+	 *
 	 * Return the (raw) singleton object registered under the given name,
 	 * creating and registering a new one if none registered yet.
 	 * @param beanName the name of the bean
