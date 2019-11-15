@@ -50,6 +50,12 @@ public interface BeanFactoryAware extends Aware {
 	 * @throws BeansException in case of initialization errors
 	 * @see BeanInitializationException
 	 */
+
+	/**
+	 * 将 BeanFactory 提供给 bean 实例回调
+	 * 调用时机和 setBeanClassLoader 一样
+	 * 生命周期   在 bean 属性填充之后、初始化回调之前回调，
+	 */
 	void setBeanFactory(BeanFactory beanFactory) throws BeansException;
 
 }
