@@ -42,6 +42,10 @@ import org.springframework.beans.BeansException;
  * @see BeanPostProcessor
  * @see PropertyResourceConfigurer
  */
+
+/**
+ * 该机制作用于容器启动阶段，允许在容器实例化 Bean 之前对注册到该容器的 BeanDefinition 做出修改。
+ */
 @FunctionalInterface
 public interface BeanFactoryPostProcessor {
 
@@ -52,6 +56,25 @@ public interface BeanFactoryPostProcessor {
 	 * properties even to eager-initializing beans.
 	 * @param beanFactory the bean factory used by the application context
 	 * @throws org.springframework.beans.BeansException in case of errors
+	 */
+
+	/**
+	 * 1、表示了该方法的作用：在 standard initialization（标准初始化） 之后（已经就是已经完成了 BeanDefinition 的加载）对 bean factory 容器进行修改。
+	 * 其中参数 beanFactory 应该就是已经完成了 standard initialization 的 BeanFactory。
+	 * 2、表示作用时机：所有的 BeanDefinition 已经完成了加载即加载至 BeanFactory 中，但是还没有完成初始化。
+	 *
+	 * postProcessBeanFactory() 工作与 BeanDefinition 加载完成之后，Bean 实例化之前，其主要作用是对加载 BeanDefinition 进行修改。
+	 * 有一点需要需要注意的是在 postProcessBeanFactory() 中千万不能进行 Bean 的实例化工作，因为这样会导致 bean 过早实例化，会产生严重后果，
+	 * 始终需要注意的是 BeanFactoryPostProcessor 是与 BeanDefinition 打交道的，如果想要与 Bean 打交道，请使用 BeanPostProcessor。
+	 *
+	 * 对于 ApplicationContext 来说，使用 BeanFactoryPostProcessor 非常方便，因为他会自动识别配置文件中的 BeanFactoryPostProcessor 并且完成注册和调用，
+	 * 只需要简单的配置声明即可。而对于 BeanFactory 容器来说则不行，他和 BeanPostProcessor 一样需要容器主动去进行注册调用，
+	 *
+	 * 常用的 BeanFactoryPostProcessor，他们是PropertyPlaceholderConfigurer 和 PropertyOverrideConfigurer :
+	 * 	其中 PropertyPlaceholderConfigurer 允许我们在 XML 配置文件中使用占位符并将这些占位符所代表的资源单独配置到简单的 properties 文件中来加载，
+	 * 	PropertyOverrideConfigurer 则允许我们使用占位符来明确表明bean 定义中的 property 与 properties 文件中的各配置项之间的对应关系
+	 * @param beanFactory
+	 * @throws BeansException
 	 */
 	void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException;
 
