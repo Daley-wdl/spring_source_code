@@ -19,6 +19,8 @@ package org.springframework.util;
 import org.springframework.lang.Nullable;
 
 /**
+ * StringValueResolver 为一个解析 String 类型值的策略接口，该接口提供了 resolveStringValue() 方法用于解析 String 值
+ *
  * Simple strategy interface for resolving a String value.
  * Used by {@link org.springframework.beans.factory.config.ConfigurableBeanFactory}.
  *

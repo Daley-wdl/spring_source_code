@@ -28,6 +28,9 @@ import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 import org.springframework.util.StringValueResolver;
 
 /**
+ * 间接实现了 Aware 和 BeanFactoryPostProcessor 两大扩展接口，postProcessBeanFactory()，是在 PropertyResourceConfigurer 中实现，该类为属性资源的配置类
+ *
+ *
  * {@link PlaceholderConfigurerSupport} subclass that resolves ${...} placeholders against
  * {@link #setLocation local} {@link #setProperties properties} and/or system properties
  * and environment variables.
@@ -209,11 +212,19 @@ public class PropertyPlaceholderConfigurer extends PlaceholderConfigurerSupport 
 	protected void processProperties(ConfigurableListableBeanFactory beanFactoryToProcess, Properties props)
 			throws BeansException {
 
+		//StringValueResolver 为一个解析 String 类型值的策略接口，该接口提供了 resolveStringValue() 方法用于解析 String 值。
 		StringValueResolver valueResolver = new PlaceholderResolvingStringValueResolver(props);
+
+		//得到 String 解析器的实例 valueResolver 后，则会调用 doProcessProperties() 方法来进行诊治的替换操作，
+		// 该方法在父类 PlaceholderConfigurerSupport 中实现
 		doProcessProperties(beanFactoryToProcess, valueResolver);
 	}
 
 
+	/**
+	 * StringValueResolver 为一个解析 String 类型值的策略接口，该接口提供了 resolveStringValue() 方法用于解析 String 值。
+	 * PlaceholderResolvingStringValueResolver 为其一个解析策略，
+	 */
 	private class PlaceholderResolvingStringValueResolver implements StringValueResolver {
 
 		private final PropertyPlaceholderHelper helper;
@@ -223,12 +234,14 @@ public class PropertyPlaceholderConfigurer extends PlaceholderConfigurerSupport 
 		public PlaceholderResolvingStringValueResolver(Properties props) {
 			this.helper = new PropertyPlaceholderHelper(
 					placeholderPrefix, placeholderSuffix, valueSeparator, ignoreUnresolvablePlaceholders);
+//			是一个用于解析字符串中包含占位符的替换值的策略接口，该接口有一个 resolvePlaceholder() 方法，用于返回占位符的替换值。
 			this.resolver = new PropertyPlaceholderConfigurerResolver(props);
 		}
 
 		@Override
 		@Nullable
 		public String resolveStringValue(String strVal) throws BeansException {
+			//helper 为 PropertyPlaceholderHelper 实例对象
 			String resolved = this.helper.replacePlaceholders(strVal, this.resolver);
 			if (trimValues) {
 				resolved = resolved.trim();

@@ -70,6 +70,8 @@ public class BeanDefinitionVisitor {
 
 
 	/**
+	 * 基本访问了 BeanDefinition 中所有值得访问的东西了，包括 parent 、class 、factory-bean 、factory-method 、scope 、property 、constructor-arg
+	 *
 	 * Traverse the given BeanDefinition object and the MutablePropertyValues
 	 * and ConstructorArgumentValues contained in them.
 	 * @param beanDefinition the BeanDefinition object to traverse
@@ -218,6 +220,7 @@ public class BeanDefinitionVisitor {
 				typedStringValue.setValue(visitedString);
 			}
 		}
+		// 由于 Properties 中的是 String，所以把前面一堆 if 去掉
 		else if (value instanceof String) {
 			return resolveStringValue((String) value);
 		}
@@ -293,6 +296,7 @@ public class BeanDefinitionVisitor {
 			throw new IllegalStateException("No StringValueResolver specified - pass a resolver " +
 					"object into the constructor or override the 'resolveStringValue' method");
 		}
+		//valueResolver 是在构造 BeanDefinitionVisitor 实例时传入的 String 类型解析器 PlaceholderResolvingStringValueResolver，调用其 resolveStringValue()
 		String resolvedValue = this.valueResolver.resolveStringValue(strVal);
 		// Return original String if not modified.
 		return (strVal.equals(resolvedValue) ? strVal : resolvedValue);
