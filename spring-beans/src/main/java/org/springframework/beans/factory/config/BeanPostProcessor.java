@@ -40,6 +40,37 @@ import org.springframework.lang.Nullable;
  * @see ConfigurableBeanFactory#addBeanPostProcessor
  * @see BeanFactoryPostProcessor
  */
+
+/**
+ * 						   实例化bean
+ * 							   ||
+ * 							   ||
+ * 							   \/
+ * 							激活Aware
+ * 						       ||
+ * 						       ||
+ * 						       \/
+ * 					BeanPostProcessor 前置处理
+ * 							   ||
+ * 							   ||
+ * 							   \/
+ * 						    初始化bean
+ * 							   ||
+ *							   ||
+ *							   \/
+ *					BeanPostProcessor 后置处理
+ *
+ *
+ *
+ *
+ * 1、BeanPostProcessor 的作用域是容器级别的，它只和所在的容器相关 ，当 BeanPostProcessor 完成注册后，它会应用于所有跟它在同一个容器内的 bean。
+ *
+ * 2、BeanFactory 和 ApplicationContext 对 BeanPostProcessor 的处理不同，ApplicationContext 会自动检测所有实现了 BeanPostProcessor 接口的 bean，并完成注册，
+ *    但是使用 BeanFactory 容器时则需要手动调用 addBeanPostProcessor() 完成注册
+ *
+ * 3、ApplicationContext 的 BeanPostProcessor 支持 Ordered，而 BeanFactory 的 BeanPostProcessor 是不支持的，
+ *    原因在于ApplicationContext 会对 BeanPostProcessor 进行 Ordered 检测并完成排序，而 BeanFactory 中的 BeanPostProcessor 只跟注册的顺序有关。
+ */
 public interface BeanPostProcessor {
 
 	/**
