@@ -25,6 +25,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.lang.Nullable;
 
 /**
+ * PropertyPlaceholderConfigurer 的子类应用，实现用户属性、系统属性 不同环境配置
+ *
  * Subclass of PropertyPlaceholderConfigurer that supports JDK 1.4's
  * Preferences API ({@code java.util.prefs}).
  *
@@ -88,6 +90,8 @@ public class PreferencesPlaceholderConfigurer extends PropertyPlaceholderConfigu
 	}
 
 	/**
+	 * 实现逻辑
+	 *
 	 * This implementation tries to resolve placeholders as keys first
 	 * in the user preferences, then in the system preferences, then in
 	 * the passed-in properties.
