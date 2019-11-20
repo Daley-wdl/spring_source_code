@@ -186,6 +186,8 @@ public class GenericConversionService implements ConfigurableConversionService {
 			throw new IllegalArgumentException("Source to convert from must be an instance of [" +
 					sourceType + "]; instead it was a [" + source.getClass().getName() + "]");
 		}
+
+		//如果 converter 为 null，则调用 handleConverterNotFound()，否则调用 handleResult() 方法
 		GenericConverter converter = getConverter(sourceType, targetType);
 		if (converter != null) {
 			Object result = ConversionUtils.invokeConverter(converter, source, sourceType, targetType);
@@ -239,6 +241,8 @@ public class GenericConversionService implements ConfigurableConversionService {
 	}
 
 	/**
+	 * 获取 GenericConverter 对象 converter
+	 *
 	 * Hook method to lookup the converter for a given sourceType/targetType pair.
 	 * First queries this ConversionService's converter cache.
 	 * On a cache miss, then performs an exhaustive search for a matching converter.
