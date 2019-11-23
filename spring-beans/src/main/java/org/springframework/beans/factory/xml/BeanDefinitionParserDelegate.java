@@ -644,10 +644,14 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * 解析元数据。当需要使用里面的信息时可以通过key获取
 	 * Parse the meta elements underneath the given element, if any.
 	 */
 	public void parseMetaElements(Element ele, BeanMetadataAttributeAccessor attributeAccessor) {
 		NodeList nl = ele.getChildNodes();
+
+		//获取相应的 key - value 构建 BeanMetadataAttribute 对象，
+		// 然后通过 addMetadataAttribute() 加入到 AbstractBeanDefinition 中
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node node = nl.item(i);
 			if (isCandidateElement(node) && nodeNameEquals(node, META_ELEMENT)) {
@@ -728,6 +732,7 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * 解析  looku-method  标签，获取器注入，是把一个方法声明为返回某种类型的 bean 但实际要返回的 bean 是在配置文件里面配置的。该方法可以用于设计一些可插拔的功能上，解除程序依赖。
 	 * Parse lookup-override sub-elements of the given bean element.
 	 */
 	public void parseLookupOverrideSubElements(Element beanEle, MethodOverrides overrides) {
@@ -746,6 +751,7 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * 解析 replaced-method  标签，可以在运行时调用新的方法替换现有的方法，还能动态的更新原有方法的逻辑
 	 * Parse replaced-method sub-elements of the given bean element.
 	 */
 	public void parseReplacedMethodSubElements(Element beanEle, MethodOverrides overrides) {
