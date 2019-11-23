@@ -110,10 +110,23 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 		throw new UnsupportedOperationException("Method Injection not supported in SimpleInstantiationStrategy");
 	}
 
+	/**
+	 * 构造方法实例化
+	 *
+	 * @param bd the bean definition
+	 * @param beanName the name of the bean when it is created in this context.
+	 * The name can be {@code null} if we are autowiring a bean which doesn't
+	 * belong to the factory.
+	 * @param owner the owning BeanFactory
+	 * @param ctor the constructor to use
+	 * @param args the constructor arguments to apply
+	 * @return
+	 */
 	@Override
 	public Object instantiate(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner,
 			final Constructor<?> ctor, Object... args) {
 
+		//先判断是否有 MethodOverrides，如果没有则是直接使用反射，如果有则就需要 CGLIB 实例化对象
 		if (!bd.hasMethodOverrides()) {
 			if (System.getSecurityManager() != null) {
 				// use own privileged to change accessibility (when security is on)
@@ -125,6 +138,7 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 			return BeanUtils.instantiateClass(ctor, args);
 		}
 		else {
+			// generate CGLIB subclass.
 			return instantiateWithMethodInjection(bd, beanName, owner, ctor, args);
 		}
 	}
@@ -141,6 +155,20 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 		throw new UnsupportedOperationException("Method Injection not supported in SimpleInstantiationStrategy");
 	}
 
+	/**
+	 * 如果是工厂方法实例化，则直接使用反射创建对象
+	 *
+	 * @param bd the bean definition
+	 * @param beanName the name of the bean when it is created in this context.
+	 * The name can be {@code null} if we are autowiring a bean which doesn't
+	 * belong to the factory.
+	 * @param owner the owning BeanFactory
+	 * @param factoryBean the factory bean instance to call the factory method on,
+	 * or {@code null} in case of a static factory method
+	 * @param factoryMethod the factory method to use
+	 * @param args the factory method arguments to apply
+	 * @return
+	 */
 	@Override
 	public Object instantiate(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner,
 			@Nullable Object factoryBean, final Method factoryMethod, Object... args) {

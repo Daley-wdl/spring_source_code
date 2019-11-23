@@ -653,6 +653,7 @@ public class Enhancer extends AbstractClassGenerator {
 	public void generateClass(ClassVisitor v) throws Exception {
 		Class sc = (superclass == null) ? Object.class : superclass;
 
+		//如果是 final类，则抛出异常
 		if (TypeUtils.isFinal(sc.getModifiers()))
 			throw new IllegalArgumentException("Cannot subclass final class " + sc.getName());
 		List constructors = new ArrayList(Arrays.asList(sc.getDeclaredConstructors()));
