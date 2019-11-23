@@ -17,6 +17,8 @@
 package org.springframework.beans.factory;
 
 /**
+ * 与 InitializingBean 和 init-method 用于对象的自定义初始化工作相似，DisposableBean和 destroy-method 则用于对象的自定义销毁工作。
+ *
  * Interface to be implemented by beans that want to release resources on destruction.
  * A {@link BeanFactory} will invoke the destroy method on individual destruction of a
  * scoped bean. An {@link org.springframework.context.ApplicationContext} is supposed
