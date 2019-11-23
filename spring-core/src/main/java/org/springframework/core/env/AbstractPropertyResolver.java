@@ -42,24 +42,31 @@ public abstract class AbstractPropertyResolver implements ConfigurablePropertyRe
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
+	// 类型转换，volatile 单例
 	@Nullable
 	private volatile ConfigurableConversionService conversionService;
 
+	// 占位符
 	@Nullable
 	private PropertyPlaceholderHelper nonStrictHelper;
 
 	@Nullable
 	private PropertyPlaceholderHelper strictHelper;
 
+	// 设置是否抛出异常, 嵌套占位符解析不了时是否抛出异常
 	private boolean ignoreUnresolvableNestedPlaceholders = false;
 
+	// 占位符前缀
 	private String placeholderPrefix = SystemPropertyUtils.PLACEHOLDER_PREFIX;
 
+	// 占位符后缀
 	private String placeholderSuffix = SystemPropertyUtils.PLACEHOLDER_SUFFIX;
 
+	// 与默认值的分割
 	@Nullable
 	private String valueSeparator = SystemPropertyUtils.VALUE_SEPARATOR;
 
+	// 必须要有的字段值
 	private final Set<String> requiredProperties = new LinkedHashSet<>();
 
 
@@ -67,6 +74,7 @@ public abstract class AbstractPropertyResolver implements ConfigurablePropertyRe
 	public ConfigurableConversionService getConversionService() {
 		// Need to provide an independent DefaultConversionService, not the
 		// shared DefaultConversionService used by PropertySourcesPropertyResolver.
+		// 需要提供独立的DefaultConversionService，而不是PropertySourcesPropertyResolver 使用的共享DefaultConversionService
 		ConfigurableConversionService cs = this.conversionService;
 		if (cs == null) {
 			synchronized (this) {
@@ -159,6 +167,9 @@ public abstract class AbstractPropertyResolver implements ConfigurablePropertyRe
 		return (getProperty(key) != null);
 	}
 
+	/**
+	 * 对属性的访问则委托给子类 {@link PropertySourcesPropertyResolver} 实现
+	 */
 	@Override
 	@Nullable
 	public String getProperty(String key) {
@@ -224,15 +235,28 @@ public abstract class AbstractPropertyResolver implements ConfigurablePropertyRe
 	 * @see #setIgnoreUnresolvableNestedPlaceholders
 	 */
 	protected String resolveNestedPlaceholders(String value) {
+		//根据 ignoreUnresolvableNestedPlaceholders 的值，来确定是否对不可解析的占位符的处理方法：是忽略还是抛出异常
+		// （该值由 setIgnoreUnresolvableNestedPlaceholders() 设置）
 		return (this.ignoreUnresolvableNestedPlaceholders ?
 				resolvePlaceholders(value) : resolveRequiredPlaceholders(value));
 	}
 
+	/**
+	 * placeholderPrefix：占位符前缀
+	 * placeholderSuffix：占位符后缀
+	 * valueSeparator：占位符变量与关联的默认值之间的分隔符
+	 * ignoreUnresolvablePlaceholders：指示是否忽略不可解析的占位符（true）或抛出异常（false）
+	 * @return
+	 */
 	private PropertyPlaceholderHelper createPlaceholderHelper(boolean ignoreUnresolvablePlaceholders) {
 		return new PropertyPlaceholderHelper(this.placeholderPrefix, this.placeholderSuffix,
 				this.valueSeparator, ignoreUnresolvablePlaceholders);
 	}
 
+	/**
+	 * String 类型的 text：待解析的字符串
+	 * PropertyPlaceholderHelper 类型的 helper：用于解析占位符的工具类
+	 */
 	private String doResolvePlaceholders(String text, PropertyPlaceholderHelper helper) {
 		return helper.replacePlaceholders(text, this::getPropertyAsRawString);
 	}

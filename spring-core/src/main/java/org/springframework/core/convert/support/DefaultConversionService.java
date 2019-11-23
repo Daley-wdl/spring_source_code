@@ -40,6 +40,7 @@ import org.springframework.lang.Nullable;
  */
 public class DefaultConversionService extends GenericConversionService {
 
+	//单例，类型转换器
 	@Nullable
 	private static volatile DefaultConversionService sharedInstance;
 
@@ -54,6 +55,8 @@ public class DefaultConversionService extends GenericConversionService {
 
 
 	/**
+	 * 获取默认的类型转换器
+	 *
 	 * Return a shared default {@code ConversionService} instance,
 	 * lazily building it once needed.
 	 * <p><b>NOTE:</b> We highly recommend constructing individual

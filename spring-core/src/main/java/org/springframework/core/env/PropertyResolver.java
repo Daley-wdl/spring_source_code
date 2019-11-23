@@ -19,6 +19,8 @@ package org.springframework.core.env;
 import org.springframework.lang.Nullable;
 
 /**
+ * 属性解析器，用于解析任何基础源的属性的接口
+ *
  * Interface for resolving properties against any underlying source.
  *
  * @author Chris Beams

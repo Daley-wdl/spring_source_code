@@ -73,6 +73,12 @@ public class PropertyPlaceholderHelper {
 	}
 
 	/**
+	 *
+	 * placeholderPrefix：占位符前缀
+	 * placeholderSuffix：占位符后缀
+	 * valueSeparator：占位符变量与关联的默认值之间的分隔符
+	 * ignoreUnresolvablePlaceholders：指示是否忽略不可解析的占位符（true）或抛出异常（false）
+	 *
 	 * Creates a new {@code PropertyPlaceholderHelper} that uses the supplied prefix and suffix.
 	 * @param placeholderPrefix the prefix that denotes the start of a placeholder
 	 * @param placeholderSuffix the suffix that denotes the end of a placeholder

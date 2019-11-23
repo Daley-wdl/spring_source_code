@@ -225,6 +225,8 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 	}
 
 	/**
+	 * 如果 activeProfiles 为空，则从 Properties 中获取 spring.profiles.active 配置，如果不为空，则调用 setActiveProfiles() 设置 profile，最后返回
+	 *
 	 * Return the set of active profiles as explicitly set through
 	 * {@link #setActiveProfiles} or if the current set of active profiles
 	 * is empty, check for the presence of the {@value #ACTIVE_PROFILES_PROPERTY_NAME}
