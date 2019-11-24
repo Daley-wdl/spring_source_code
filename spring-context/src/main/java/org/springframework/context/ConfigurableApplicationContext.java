@@ -21,6 +21,7 @@ import java.io.Closeable;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ProtocolResolver;
@@ -165,6 +166,7 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	/**
 	 * 加载或者刷新配置
 	 * 这是一个非常重要的方法
+	 * 实现在 {@link AbstractApplicationContext}
 	 *
 	 * Load or refresh the persistent representation of the configuration,
 	 * which might an XML file, properties file, or relational database schema.
