@@ -306,6 +306,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
+	 * 提供当前系统环境 Environment 组件
+	 *
 	 * Return the {@code Environment} for this application context in configurable
 	 * form, allowing for further customization.
 	 * <p>If none specified, a default environment will be initialized via
@@ -320,6 +322,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
+	 * StandardEnvironment 是一个适用于非 WEB 应用的 Environment。
+	 *
 	 * Create and return a new {@link StandardEnvironment}.
 	 * <p>Subclasses may override this method in order to supply
 	 * a custom {@link ConfigurableEnvironment} implementation.
@@ -347,6 +351,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
+	 * 用于通知在此应用程序中注册的所有的监听器
+	 *
 	 * Publish the given event to all listeners.
 	 * <p>Note: Listeners get initialized after the MessageSource, to be able
 	 * to access it within listener implementations. Thus, MessageSource
@@ -383,6 +389,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		Assert.notNull(event, "Event must not be null");
 
 		// Decorate event as an ApplicationEvent if necessary
+		//如果指定的事件不是ApplicationEvent，则它将包装在PayloadApplicationEvent中。
+		// 如果存在父级 ApplicationContext ，则同样要将 event 发布给父级 ApplicationContext
 		ApplicationEvent applicationEvent;
 		if (event instanceof ApplicationEvent) {
 			applicationEvent = (ApplicationEvent) event;
@@ -969,6 +977,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
+	 * Closeable 接口用于关闭和释放资源，提供了 close() 以释放对象所持有的资源。
+	 * 在 ApplicationContext 体系中由AbstractApplicationContext 实现，用于关闭 ApplicationContext 销毁所有 bean ，此外如果注册有 JVM shutdown hook，同样要将其移除。
+	 *
 	 * Close this application context, destroying all beans in its bean factory.
 	 * <p>Delegates to {@code doClose()} for the actual closing procedure.
 	 * Also removes a JVM shutdown hook, if registered, as it's not needed anymore.
@@ -993,6 +1004,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
+	 * 销毁工作
+	 *
 	 * Actually performs context closing: publishes a ContextClosedEvent and
 	 * destroys the singletons in the bean factory of this application context.
 	 * <p>Called by both {@code close()} and a JVM shutdown hook, if any.
@@ -1295,8 +1308,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	// Implementation of MessageSource interface
 	//---------------------------------------------------------------------
 
+	//实现 getMessage()
 	@Override
 	public String getMessage(String code, @Nullable Object[] args, @Nullable String defaultMessage, Locale locale) {
+		//委托给 messageSource 实现
 		return getMessageSource().getMessage(code, args, defaultMessage, locale);
 	}
 
@@ -1338,6 +1353,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	// Implementation of ResourcePatternResolver interface
 	//---------------------------------------------------------------------
 
+	/**
+	 * 最终是在 PathMatchingResourcePatternResolver 中实现，该类是 ResourcePatternResolver 接口的实现者。
+	 * @return
+	 * @throws IOException
+	 */
 	@Override
 	public Resource[] getResources(String locationPattern) throws IOException {
 		return this.resourcePatternResolver.getResources(locationPattern);
@@ -1348,6 +1368,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	// Implementation of Lifecycle interface
 	//---------------------------------------------------------------------
 
+	/**
+	 * Lifecycle 接口的实现都是委托给 lifecycleProcessor 实现的
+	 *
+	 * 在启动、停止的时候会分别发布 ContextStartedEvent 和 ContextStoppedEvent 事件
+	 */
 	@Override
 	public void start() {
 		getLifecycleProcessor().start();

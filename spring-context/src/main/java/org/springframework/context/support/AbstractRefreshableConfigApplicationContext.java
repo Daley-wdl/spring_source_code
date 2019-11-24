@@ -133,6 +133,8 @@ public abstract class AbstractRefreshableConfigApplicationContext extends Abstra
 	}
 
 	/**
+	 * 设置 bean name
+	 *
 	 * Sets the id of this context to the bean name by default,
 	 * for cases where the context instance is itself defined as a bean.
 	 */
@@ -145,12 +147,15 @@ public abstract class AbstractRefreshableConfigApplicationContext extends Abstra
 	}
 
 	/**
+	 * nitializingBean 为 bean 提供了初始化方法的方式，它提供的 afterPropertiesSet() 用于执行初始化动作
+	 *
 	 * Triggers {@link #refresh()} if not refreshed in the concrete context's
 	 * constructor already.
 	 */
 	@Override
 	public void afterPropertiesSet() {
 		if (!isActive()) {
+			// 开始刷新工程厂，初始化
 			refresh();
 		}
 	}

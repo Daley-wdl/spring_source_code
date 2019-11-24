@@ -19,11 +19,25 @@ package org.springframework.context;
 import org.springframework.beans.factory.HierarchicalBeanFactory;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.env.EnvironmentCapable;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.lang.Nullable;
 
 /**
+ * 继承 MessageSource，提供国际化的标准访问策略。
+ * 继承 ApplicationEventPublisher ，提供强大的事件机制。
+ * 扩展 ResourceLoader，可以用来加载多个 Resource，可以灵活访问不同的资源。
+ * 对 Web 应用的支持。
+ *
+ *
+ *
+ * 接口 {@link ConfigurableApplicationContext} 对 ApplicationContext 接口再次进行扩展，提供了生命周期的管理功能。
+ * {@link AbstractApplicationContext} 对整套接口提供了大部分的默认实现，将其中“不易变动”的部分进行了封装，
+ * 通过“组合”的方式将“容易变动”的功能委托给其他类来实现，同时利用模板方法模式将一些方法的实现开放出去由子类实现，从而实现“对扩展开放，对修改封闭”的设计原则。
+ *
+ *
+ *
  * Central interface to provide configuration for an application.
  * This is read-only while the application is running, but may be
  * reloaded if the implementation supports this.
