@@ -17,7 +17,7 @@
 	Configures the annotation-driven Spring MVC Controller programming model.
 	Note that this tag works in Web MVC only, not in Portlet MVC!
 
-	See org.springframework.web.servlet.config.annotation.EnableWebMvc javadoc for details
+	See org.springframework.web.org.springframework.web.servlet.config.annotation.EnableWebMvc javadoc for details
 	on code-based alternatives to enabling annotation-driven Spring MVC support.
 			]]></xsd:documentation>
 		</xsd:annotation>
@@ -700,7 +700,7 @@
 			<xsd:documentation><![CDATA[
 	The ordered set of interceptors that intercept HTTP Servlet Requests handled by Controllers.
 	Interceptors allow requests to be pre/post processed before/after handling.
-	Each interceptor must implement the org.springframework.web.servlet.HandlerInterceptor or
+	Each interceptor must implement the org.springframework.web.org.springframework.web.servlet.HandlerInterceptor or
 	org.springframework.web.context.request.WebRequestInterceptor interface.
 	The interceptors in this set are automatically detected by every registered HandlerMapping.
 	The URI paths each interceptor applies to are configurable.
@@ -859,7 +859,7 @@
 					<xsd:documentation><![CDATA[
 	Set the specific redirect 3xx status code to use.
 
-	If not set, org.springframework.web.servlet.view.RedirectView
+	If not set, org.springframework.web.org.springframework.web.servlet.view.RedirectView
 	will select MOVED_TEMPORARILY (302) by default.
 					]]></xsd:documentation>
 				</xsd:annotation>
@@ -918,14 +918,14 @@
 							<xsd:element ref="beans:bean">
 								<xsd:annotation>
 									<xsd:documentation><![CDATA[
-	A bean definition for an org.springframework.web.servlet.View class.
+	A bean definition for an org.springframework.web.org.springframework.web.servlet.View class.
 									]]></xsd:documentation>
 								</xsd:annotation>
 							</xsd:element>
 							<xsd:element ref="beans:ref">
 								<xsd:annotation>
 									<xsd:documentation><![CDATA[
-	A reference to a bean for an org.springframework.web.servlet.View class.
+	A reference to a bean for an org.springframework.web.org.springframework.web.servlet.View class.
 									]]></xsd:documentation>
 								</xsd:annotation>
 							</xsd:element>
@@ -1091,7 +1091,7 @@
 				<xsd:annotation>
 					<xsd:documentation><![CDATA[
 	ViewResolver's registered through this element are encapsulated in an
-	instance of org.springframework.web.servlet.view.ViewResolverComposite and
+	instance of org.springframework.web.org.springframework.web.servlet.view.ViewResolverComposite and
 	follow the order of registration. This attribute determines the order of the
 	ViewResolverComposite itself relative to any additional ViewResolver's
 	(not registered through this element) present in the Spring configuration

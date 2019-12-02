@@ -162,7 +162,7 @@ public class MockServletContextTests {
 	 */
 	@Test
 	public void getServletRegistration() {
-		assertNull(sc.getServletRegistration("servlet"));
+		assertNull(sc.getServletRegistration("org/springframework/web/servlet"));
 	}
 
 	/**

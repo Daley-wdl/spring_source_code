@@ -74,7 +74,7 @@ public class ResourceTransformerSupportTests {
 	public void resolveUrlPath() {
 		this.request.setRequestURI("/context/servlet/resources/main.css");
 		this.request.setContextPath("/context");
-		this.request.setServletPath("/servlet");
+		this.request.setServletPath("/org/springframework/web/servlet");
 		String resourcePath = "/context/servlet/resources/bar.css";
 		Resource resource = getResource("main.css");
 		String actual = this.transformer.resolveUrlPath(resourcePath, this.request, resource, this.transformerChain);

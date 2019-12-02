@@ -424,11 +424,11 @@ public class ComplexWebApplicationContext extends StaticWebApplicationContext {
 			if (request.getParameter("access") != null) {
 				throw new IllegalAccessException("illegal access");
 			}
-			if (request.getParameter("servlet") != null) {
-				throw new ServletRequestBindingException("servlet");
+			if (request.getParameter("org/springframework/web/servlet") != null) {
+				throw new ServletRequestBindingException("org/springframework/web/servlet");
 			}
 			if (request.getParameter("exception") != null) {
-				throw new RuntimeException("servlet");
+				throw new RuntimeException("org/springframework/web/servlet");
 			}
 			if (!(RequestContextUtils.getLocaleResolver(request) instanceof SessionLocaleResolver)) {
 				throw new ServletException("Incorrect LocaleResolver");

@@ -14,7 +14,7 @@
 		<property name="location"><value>test</value></property>
 	</bean>
 
-	<bean id="example2" class="org.springframework.web.servlet.view.JstlView">
+	<bean id="example2" class="org.springframework.web.org.springframework.web.servlet.view.JstlView">
 		<property name="url"><value>/example2new.jsp</value></property>
 		<property name="attributes">
 			<value>

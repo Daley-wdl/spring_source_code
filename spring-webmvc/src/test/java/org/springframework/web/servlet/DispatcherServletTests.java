@@ -309,7 +309,7 @@ public class DispatcherServletTests {
 		MockHttpServletRequest request = new MockHttpServletRequest(getServletContext(), "GET", "/locale.do");
 		request.addPreferredLocale(Locale.CANADA);
 		request.addUserRole("role1");
-		request.addParameter("servlet", "yes");
+		request.addParameter("org/springframework/web/servlet", "yes");
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		complexDispatcherServlet.service(request, response);
 		assertEquals(200, response.getStatus());
@@ -335,7 +335,7 @@ public class DispatcherServletTests {
 		MockHttpServletRequest request = new MockHttpServletRequest(getServletContext(), "GET", "/loc.do");
 		request.addPreferredLocale(Locale.CANADA);
 		request.addUserRole("role1");
-		request.addParameter("servlet", "yes");
+		request.addParameter("org/springframework/web/servlet", "yes");
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		complexDispatcherServlet.service(request, response);
 		assertEquals(500, response.getStatus());

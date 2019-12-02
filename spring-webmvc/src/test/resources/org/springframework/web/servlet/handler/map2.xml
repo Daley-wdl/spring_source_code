@@ -3,7 +3,7 @@
 
 <beans>
 
-	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+	<bean id="urlMapping" class="org.springframework.web.org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="defaultHandler"><ref bean="starController"/></property>
 		<property name="rootHandler"><ref bean="mainController"/></property>
 		<property name="useTrailingSlashMatch" value="true"/>
@@ -20,7 +20,7 @@
 		</property>
 	</bean>
 
-	<bean id="urlMappingWithProps" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+	<bean id="urlMappingWithProps" class="org.springframework.web.org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="defaultHandler"><ref bean="starController"/></property>
 		<property name="rootHandler"><ref bean="mainController"/></property>
 		<property name="useTrailingSlashMatch" value="true"/>

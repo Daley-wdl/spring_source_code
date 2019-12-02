@@ -20,7 +20,7 @@
 
 	<mvc:tiles-configurer check-refresh="true" validate-definitions="true"
 			definitions-factory="org.apache.tiles.definition.UnresolvingLocaleDefinitionsFactory"
-			preparer-factory="org.springframework.web.servlet.view.tiles3.SpringBeanPreparerFactory">
+			preparer-factory="org.springframework.web.org.springframework.web.servlet.view.tiles3.SpringBeanPreparerFactory">
 		<mvc:definitions location="/org/springframework/web/servlet/resource/tiles/tiles1.xml"/>
 		<mvc:definitions location="/org/springframework/web/servlet/resource/tiles/tiles2.xml"/>
 	</mvc:tiles-configurer>

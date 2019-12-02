@@ -139,7 +139,7 @@ public class DefaultMockMvcBuilderTests {
 		builder.dispatchOptions(true);
 		MockMvc mvc = builder.build();
 		DispatcherServlet ds = (DispatcherServlet) new DirectFieldAccessor(mvc)
-				.getPropertyValue("servlet");
+				.getPropertyValue("org/springframework/web/servlet");
 		assertEquals("test-id", ds.getContextId());
 	}
 
@@ -152,7 +152,7 @@ public class DefaultMockMvcBuilderTests {
 		builder.dispatchOptions(true);
 		MockMvc mvc = builder.build();
 		DispatcherServlet ds = (DispatcherServlet) new DirectFieldAccessor(mvc)
-				.getPropertyValue("servlet");
+				.getPropertyValue("org/springframework/web/servlet");
 		assertEquals("override-id", ds.getContextId());
 	}
 

@@ -82,7 +82,7 @@ public class RequestContextTests {
 	@Test
 	public void testPathToServlet() throws Exception {
 		request.setContextPath("/app");
-		request.setServletPath("/servlet");
+		request.setServletPath("/org/springframework/web/servlet");
 		RequestContext context = new RequestContext(request, response, servletContext, model);
 
 		assertEquals("/app/servlet", context.getPathToServlet());
