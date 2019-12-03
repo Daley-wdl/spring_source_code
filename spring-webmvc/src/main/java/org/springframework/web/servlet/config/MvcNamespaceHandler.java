@@ -20,6 +20,8 @@ import org.springframework.beans.factory.xml.NamespaceHandler;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
+ * spring 的xml命名空间解析类放在了 META-INF 的 spring.handlers 文件中
+ *
  * {@link NamespaceHandler} for Spring MVC configuration namespace.
  *
  * @author Keith Donald

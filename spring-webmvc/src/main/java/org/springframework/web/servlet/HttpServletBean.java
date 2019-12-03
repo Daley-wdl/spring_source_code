@@ -138,6 +138,9 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 	}
 
 	/**
+	 * 在HttpServletBean 的init中，首先将servlet 中配置的参数使用 BeanWrapper 设置到 DispatcherServlet 的相关属性，
+	 * 然后调用模板方法 initBeanWrapper(), 子类通过这个方法初始化
+	 *
 	 * Map config parameters onto bean properties of this servlet, and
 	 * invoke subclass initialization.
 	 * @throws ServletException if bean properties are invalid (or required
@@ -157,7 +160,7 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 				bw.registerCustomEditor(Resource.class, new ResourceEditor(resourceLoader, getEnvironment()));
                 // 空实现，留给子类覆盖
 				initBeanWrapper(bw);
-				// 以 Spring 的方式来将 pvs 注入到该 BeanWrapper 对象中
+				// 以 Spring 的方式来将 pvs(配置的初始化值) 注入到该 BeanWrapper（DispatcherServlet） 对象中
 				bw.setPropertyValues(pvs, true);
 			} catch (BeansException ex) {
 				if (logger.isErrorEnabled()) {

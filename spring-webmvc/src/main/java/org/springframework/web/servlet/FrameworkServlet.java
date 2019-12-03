@@ -567,6 +567,8 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	}
 
 	/**
+	 * 初始化 WebApplicationContext
+	 *
 	 * Initialize and publish the WebApplicationContext for this servlet.
 	 * <p>Delegates to {@link #createWebApplicationContext} for actual creation
 	 * of the context. Can be overridden in subclasses.
@@ -577,6 +579,12 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 */
 	protected WebApplicationContext initWebApplicationContext() {
 	    // 获得根 WebApplicationContext 对象
+		/**
+		 * 获取 spring 根容器 rootContext 原理：
+		 * 默认情况下 spring 会将自己的容器设置成 ServletContext 的属性, 默认根容器的 key 为 org.springframework.web.context.WebApplicationContext.ROOT
+		 * 定义在 {@link org.springframework.web.context.WebApplicationContext} 中,
+		 * 获取根容器需调用 ServletContext#getAttribute("org.springframework.web.context.WebApplicationContext.ROOT")
+		 */
 		WebApplicationContext rootContext = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 
 		// 获得 WebApplicationContext wac 变量
@@ -603,7 +611,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 				}
 			}
 		}
-		// 第二种情况，从 ServletContext 获取对应的 WebApplicationContext 对象
+		// 第二种情况，从 ServletContext 的 contextAttribute 中获取对应的 WebApplicationContext 对象
 		if (wac == null) {
 			// No context instance was injected at construction time -> see if one
 			// has been registered in the servlet context. If one exists, it is assumed
@@ -611,7 +619,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 			// user has performed any initialization such as setting the context id
 			wac = findWebApplicationContext();
 		}
-		// 第三种，创建一个 WebApplicationContext 对象
+		// 第三种，如果还没有创建，则创建一个 WebApplicationContext 对象
 		if (wac == null) {
 			// No context instance is defined for this servlet -> create a local one
 			wac = createWebApplicationContext(rootContext);
@@ -677,7 +685,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 * @see org.springframework.web.context.support.XmlWebApplicationContext
 	 */
 	protected WebApplicationContext createWebApplicationContext(@Nullable ApplicationContext parent) {
-	    // 获得 context 的类
+	    // 获取要创建 context 的类型
 		Class<?> contextClass = getContextClass();
 		// 如果非 ConfigurableWebApplicationContext 类型，抛出 ApplicationContextException 异常
 		if (!ConfigurableWebApplicationContext.class.isAssignableFrom(contextClass)) {

@@ -477,6 +477,8 @@ public class DispatcherServlet extends FrameworkServlet {
 
 
 	/**
+	 * 入口方法
+	 *
 	 * This implementation calls {@link #initStrategies}.
 	 */
 	@Override
@@ -485,6 +487,10 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
+	 * 初始化策略，这里独立出来，可由子类扩展新的策略
+	 *
+	 * 这里的 context 是 FrameworkServlet 中创建的 WebApplicationContext
+	 *
 	 * Initialize the strategy objects that this servlet uses.
 	 * <p>May be overridden in subclasses in order to initialize further strategy objects.
 	 */
@@ -866,6 +872,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	protected <T> List<T> getDefaultStrategies(ApplicationContext context, Class<T> strategyInterface) {
 		// 获得 strategyInterface 对应的 value 值
 	    String key = strategyInterface.getName();
+	    //获取所需要策略的类型
 		String value = defaultStrategies.getProperty(key);
 		// 创建 value 对应的对象们，并返回
 		if (value != null) {
