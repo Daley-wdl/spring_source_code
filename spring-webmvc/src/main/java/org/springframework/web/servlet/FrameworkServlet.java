@@ -1049,19 +1049,21 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		// 记录异常
 		Throwable failureCause = null;
 
-		// TODO 芋艿
+		// 获取 LocaleContextHolder 中原来保存的 LocaleContext
 		LocaleContext previousLocaleContext = LocaleContextHolder.getLocaleContext();
+		// 获取当前请求的 LocaleContext
 		LocaleContext localeContext = buildLocaleContext(request);
 
-		// TODO 芋艿
+		// 获取 RequestContextHolder 中原来保存的 RequestAttributes
 		RequestAttributes previousAttributes = RequestContextHolder.getRequestAttributes();
+		// 获取当前请求的ServletRequestAttributes
 		ServletRequestAttributes requestAttributes = buildRequestAttributes(request, response, previousAttributes);
 
 		// TODO 芋艿
 		WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
 		asyncManager.registerCallableInterceptor(FrameworkServlet.class.getName(), new RequestBindingInterceptor());
 
-		// TODO 芋艿
+		// 将当前请求的 LocaleContext 和 RequestAttributes 设置到 LocaleContextHolder 和 RequestContextHolder
 		initContextHolders(request, localeContext, requestAttributes);
 
 		try {
@@ -1074,14 +1076,14 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 			failureCause = ex;
 			throw new NestedServletException("Request processing failed", ex);
 		} finally {
-		    // TODO 芋艿
+		    // 恢复原来的 LocaleContext 和 RequestAttributes
 			resetContextHolders(request, previousLocaleContext, previousAttributes);
 			if (requestAttributes != null) {
 				requestAttributes.requestCompleted();
 			}
 			// 打印请求日志，并且日志级别为 DEBUG 。
 			logResult(request, response, failureCause, asyncManager);
-			// TODO 芋艿
+			// 发布 RequestHandledEvent 消息
 			publishRequestHandledEvent(request, response, startTime, failureCause);
 		}
 	}

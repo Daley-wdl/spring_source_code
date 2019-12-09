@@ -930,7 +930,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 		// Keep a snapshot of the request attributes in case of an include,
 		// to be able to restore the original attributes after the include.
-        // TODO 芋艿
+        // 当 include 请求时对request 和attribute做快照备份
 		Map<String, Object> attributesSnapshot = null;
 		if (WebUtils.isIncludeRequest(request)) {
 			attributesSnapshot = new HashMap<>();
@@ -967,6 +967,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		    // TODO 芋艿
 			if (!WebAsyncUtils.getAsyncManager(request).isConcurrentHandlingStarted()) {
 				// Restore the original attribute snapshot, in case of an include.
+				// 还原request快照 的属性
 				if (attributesSnapshot != null) {
 					restoreAttributesAfterInclude(request, attributesSnapshot);
 				}
@@ -1042,7 +1043,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				multipartRequestParsed = (processedRequest != request);
 
 				// Determine handler for the current request.
-                // 获得请求对应的 HandlerExecutionChain 对象
+                // 获得请求对应的 HandlerExecutionChain 对象, 根据request 找到handler, handler 就是一个 @requestMapping
 				mappedHandler = getHandler(processedRequest);
 				if (mappedHandler == null) { // 如果获取不到，则根据配置抛出异常或返回 404 错误。
 					noHandlerFound(processedRequest, response);
@@ -1054,7 +1055,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
 
 				// Process last-modified header, if supported by the handler.
-                // TODO 芋艿 last-modified
+                // 处理 get 、head请求的 last-modified
 				String method = request.getMethod();
 				boolean isGet = "GET".equals(method);
 				if (isGet || "HEAD".equals(method)) {
@@ -1073,12 +1074,12 @@ public class DispatcherServlet extends FrameworkServlet {
                 // 真正的调用 handler 方法，并返回视图
 				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
 
-				// TODO 芋艿
+				// 如果需要异步请求，直接返回
 				if (asyncManager.isConcurrentHandlingStarted()) {
 					return;
 				}
 
-				// TODO 芋艿 视图
+				// 当view 为空时（比如，handler返回为 void），根据request设置为默认 view
 				applyDefaultViewName(processedRequest, mv);
 				// 后置处理 拦截器
 				mappedHandler.applyPostHandle(processedRequest, response, mv);
