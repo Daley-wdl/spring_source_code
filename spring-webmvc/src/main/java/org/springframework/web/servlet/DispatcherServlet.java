@@ -672,6 +672,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
+	 * 异常处理
 	 * Initialize the HandlerExceptionResolver used by this class.
 	 * <p>If no bean is defined with the given name in the BeanFactory for this namespace,
 	 * we default to no exception resolver.
