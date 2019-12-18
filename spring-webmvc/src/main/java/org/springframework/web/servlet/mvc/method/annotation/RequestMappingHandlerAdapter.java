@@ -780,7 +780,9 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 		// TODO WebContentGenerator
 		if (!response.containsHeader(HEADER_CACHE_CONTROL)) {
+			// 判断 handler 是否有 @SessionAttribute注解的参数
 			if (getSessionAttributesHandler(handlerMethod).hasSessionAttributes()) {
+				//设置缓存的过期时间
 				applyCacheSeconds(response, this.cacheSecondsForSessionAttributeHandlers);
 			} else {
 				prepareResponse(response);
@@ -807,6 +809,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 	private SessionAttributesHandler getSessionAttributesHandler(HandlerMethod handlerMethod) {
 		Class<?> handlerType = handlerMethod.getBeanType();
 		SessionAttributesHandler sessionAttrHandler = this.sessionAttributesHandlerCache.get(handlerType);
+		// 第一次调用保存到缓存中，后面直接从换从中读
 		if (sessionAttrHandler == null) {
 			synchronized (this.sessionAttributesHandlerCache) {
 				sessionAttrHandler = this.sessionAttributesHandlerCache.get(handlerType);
@@ -820,6 +823,8 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 	}
 
 	/**
+	 * 执行 @RequestMapping 标注的方法
+	 *
 	 * Invoke the {@link RequestMapping} handler method preparing a {@link ModelAndView}
 	 * if view resolution is required.
 	 * @since 4.2
@@ -832,7 +837,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 	    // 创建 ServletWebRequest 对象
 		ServletWebRequest webRequest = new ServletWebRequest(request, response);
 		try {
-		    // 创建 WebDataBinderFactory 对象
+		    // 创建 WebDataBinderFactory 对象, 用来创建 WebDataBinder，主要功能就是和 string 之间进行类型转换
 			WebDataBinderFactory binderFactory = getDataBinderFactory(handlerMethod);
 			// 创建 ModelFactory 对象
 			ModelFactory modelFactory = getModelFactory(handlerMethod, binderFactory);

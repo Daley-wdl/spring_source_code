@@ -309,6 +309,8 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	}
 
 	/**
+	 * 初始化拦截器
+	 *
 	 * Initializes the interceptors.
 	 * @see #extendInterceptors(List)
 	 * @see #initInterceptors()

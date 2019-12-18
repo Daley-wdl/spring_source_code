@@ -137,6 +137,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 		if (handler == null) {
 			// We need to care for the default handler directly, since we need to
 			// expose the PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE for it as well.
+			//定义一个临时变量，用于保存原始的 handler
 			Object rawHandler = null;
 			// 如果是根路径，则使用 rootHandler 处理器
 			if ("/".equals(lookupPath)) {
@@ -153,7 +154,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 					String handlerName = (String) rawHandler;
 					rawHandler = obtainApplicationContext().getBean(handlerName);
 				}
-                // 空方法，校验处理器。目前暂无子类实现该方法
+                // 空方法，校验处理器。可用于校验找到的 handler 和 request 是否匹配，目前暂无子类实现该方法
 				validateHandler(rawHandler, request);
 				// 创建处理器
 				handler = buildPathExposingHandler(rawHandler, lookupPath, lookupPath, null);

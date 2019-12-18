@@ -441,12 +441,14 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 				cacheForSeconds(response, cacheSeconds);
 			}
 			else if (cacheSeconds == 0) {
+				//组织使用缓存
 				preventCaching(response);
 			}
 		}
 		else {
 			CacheControl cControl;
 			if (cacheSeconds > 0) {
+				//设置缓存过期时间
 				cControl = CacheControl.maxAge(cacheSeconds, TimeUnit.SECONDS);
 				if (this.alwaysMustRevalidate) {
 					cControl = cControl.mustRevalidate();

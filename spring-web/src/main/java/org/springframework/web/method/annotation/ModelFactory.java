@@ -90,6 +90,8 @@ public final class ModelFactory {
 
 
 	/**
+	 * 初始化model
+	 *
 	 * Populate the model in the following order:
 	 * <ol>
 	 * <li>Retrieve "known" session attributes listed as {@code @SessionAttributes}.
@@ -106,10 +108,14 @@ public final class ModelFactory {
 	public void initModel(NativeWebRequest request, ModelAndViewContainer container, HandlerMethod handlerMethod)
 			throws Exception {
 
+		// 从 SessionAttributes 中取出保存的参数， 并合并到 mavContainer
 		Map<String, ?> sessionAttributes = this.sessionAttributesHandler.retrieveAttributes(request);
 		container.mergeAttributes(sessionAttributes);
+
+		// 执行了注释 @ModelAttribute 的方法 并将结果设置到 model
 		invokeModelAttributeMethods(request, container);
 
+		// 遍历既注释了 @ModelAttribute 又在 @SessionAttributes 注释中的参数
 		for (String name : findSessionAttributeArguments(handlerMethod)) {
 			if (!container.containsAttribute(name)) {
 				Object value = this.sessionAttributesHandler.retrieveAttribute(request, name);
@@ -139,8 +145,10 @@ public final class ModelFactory {
 				continue;
 			}
 
+			// 执行注释了 @ModelAttribute 的方法
 			Object returnValue = modelMethod.invokeForRequest(request, container);
 			if (!modelMethod.isVoid()){
+				// 获取参数名
 				String returnValueName = getNameForReturnValue(returnValue, modelMethod.getReturnType());
 				if (!ann.binding()) {
 					container.setBindingDisabled(returnValueName);
