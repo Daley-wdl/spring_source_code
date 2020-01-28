@@ -19,6 +19,17 @@ package org.springframework.beans.factory;
 import org.springframework.beans.BeansException;
 
 /**
+ * 它的目的也是作为一个工厂，来生成 Object（这个接口只有一个方法 getObject()）。这个接口一般被
+ * 用来，包装一个 factory，通过个这工厂来返回一个新实例（prototype 类型）。这个接口和 FactoryBean
+ * 有点像，但 FactoryBean 的实现是被当做一个 SPI（Service Provider Interface）实例来使用在
+ * BeanFactory 里面；ObjectFactory 的实现一般被用来注入到其它 Bean 中，作为 API 来使用。就
+ * 像 ObjectFactoryCreatingFactoryBean 的 例 子 ， 它 的 返 回 值 就 是 一 个 ObjectFactory ， 这 个
+ * ObjectFactory 被注入到了 Bean 中，在 Bean 通过这个接口的实例，来取得我们想要的 Bean。
+ * 
+ * 总的来说，FactoryBean 和 ObjectFactory 都是用来取得 Bean，但使用的方法和地方不同，
+ * FactoryBean 被配置好后，Spring 调用 getObject()方法来取得 Bean，ObjectFactory 配置好后，
+ * 在 Bean 里面可以取得 ObjectFactory 实例，需要我们手动来调用 getObject()来取得 Bean
+ *
  * Defines a factory which can return an Object instance
  * (possibly shared or independent) when invoked.
  *

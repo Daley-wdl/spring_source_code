@@ -19,6 +19,15 @@ package org.springframework.beans.factory;
 import org.springframework.lang.Nullable;
 
 /**
+ * 用户可以通过实现该接口定制实例化 bean 的逻辑
+ *
+ * 这个接口使你可以提供一个复杂的逻辑来生成 Bean。它本质是一个 Bean，但这个 Bean 不是用来注
+ * 入到其它地方像 Service、Dao 一样使用的，它是用来生成其它 Bean 使用的。实现了这个接口后，
+ * Spring 在容器初始化时，把实现这个接口的 Bean 取出来，使用接口的 getObject()方法来生成我们
+ * 要想的 Bean。当然，那些生成 Bean 的业务逻辑也要写 getObject()方法中。
+ * 其返回的对象不是指定类的一个实例，其返回的是该工厂 Bean 的 getObject 方法所返回的对象。创
+ * 建出来的对象是否属于单例由 isSingleton 中的返回决定
+ *
  * Interface to be implemented by objects used within a {@link BeanFactory} which
  * are themselves factories for individual objects. If a bean implements this
  * interface, it is used as a factory for an object to expose, not directly as a
@@ -59,6 +68,9 @@ import org.springframework.lang.Nullable;
 public interface FactoryBean<T> {
 
 	/**
+	 * 返回 bean 实例，如果 isSingleton()返回 true，那么该实例会放到 Spring 容器中单
+	 * 例缓存池中
+	 *
 	 * Return an instance (possibly shared or independent) of the object
 	 * managed by this factory.
 	 * <p>As with a {@link BeanFactory}, this allows support for both the
