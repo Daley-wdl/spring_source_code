@@ -1142,6 +1142,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
+	 *  {@link InstantiationAwareBeanPostProcessor#postProcessBeforeInstantiation}
+	 *  在 doCreateBean 之前调用，如果需要进行代理，则直接返回代理后的 bean。
+	 *
 	 * Apply InstantiationAwareBeanPostProcessors to the specified bean definition
 	 * (by class and name), invoking their {@code postProcessBeforeInstantiation} methods.
 	 * <p>Any returned object will be used as the bean instead of actually instantiating

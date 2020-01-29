@@ -28,6 +28,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * 解析 AOP 标 签 时 注 册 了 AnnotationAwareAspectJAutoProxyCreator ， 它 继 承 了
+ * AbstractAdvisorAutoProxyCreator，是一个 InstantiationAwareBeanPostProcessor
+ *
  * {@link AspectJAwareAdvisorAutoProxyCreator} subclass that processes all AspectJ
  * annotation aspects in the current application context, as well as Spring Advisors.
  *
