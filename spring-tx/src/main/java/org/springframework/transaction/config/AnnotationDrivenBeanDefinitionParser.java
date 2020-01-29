@@ -33,6 +33,8 @@ import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.util.ClassUtils;
 
 /**
+ * 创建spring事务支持需要的 beanDefinition
+ *
  * {@link org.springframework.beans.factory.xml.BeanDefinitionParser
  * BeanDefinitionParser} implementation that allows users to easily configure
  * all the infrastructure beans required to enable annotation-driven transaction
@@ -53,6 +55,8 @@ import org.springframework.util.ClassUtils;
 class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 
 	/**
+	 * 解析 {@code <tx:annotation-driven/>} 标签
+	 *
 	 * Parses the {@code <tx:annotation-driven/>} tag. Will
 	 * {@link AopNamespaceUtils#registerAutoProxyCreatorIfNecessary register an AutoProxyCreator}
 	 * with the container as necessary.

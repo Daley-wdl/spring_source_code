@@ -89,6 +89,8 @@ public @interface Transactional {
 	Propagation propagation() default Propagation.REQUIRED;
 
 	/**
+	 * 声明事务的隔离级别
+	 *
 	 * The transaction isolation level.
 	 * <p>Defaults to {@link Isolation#DEFAULT}.
 	 * <p>Exclusively designed for use with {@link Propagation#REQUIRED} or
@@ -103,6 +105,8 @@ public @interface Transactional {
 	Isolation isolation() default Isolation.DEFAULT;
 
 	/**
+	 * 事务在强制回滚之前可以保持多久. 这样可以防止长期运行的事务占用资源
+	 *
 	 * The timeout for this transaction (in seconds).
 	 * <p>Defaults to the default timeout of the underlying transaction system.
 	 * <p>Exclusively designed for use with {@link Propagation#REQUIRED} or
@@ -113,6 +117,11 @@ public @interface Transactional {
 	int timeout() default TransactionDefinition.TIMEOUT_DEFAULT;
 
 	/**
+	 * 只读事务属性: 表示这个事务只读取数据但不更新数据, 这样可以帮助数据库引擎优化事务
+	 *
+	 * 将事务设置成只读后，相当于将数据库设置成只读数据库，此时若要进行写的操作，会出
+	 * 现错误
+	 *
 	 * A boolean flag that can be set to {@code true} if the transaction is
 	 * effectively read-only, allowing for corresponding optimizations at runtime.
 	 * <p>Defaults to {@code false}.
@@ -127,6 +136,8 @@ public @interface Transactional {
 	boolean readOnly() default false;
 
 	/**
+	 * 设置抛出异常回滚
+	 *
 	 * Defines zero (0) or more exception {@link Class classes}, which must be
 	 * subclasses of {@link Throwable}, indicating which exception types must cause
 	 * a transaction rollback.
@@ -163,6 +174,8 @@ public @interface Transactional {
 	String[] rollbackForClassName() default {};
 
 	/**
+	 * 遇到异常类不会滚
+	 *
 	 * Defines zero (0) or more exception {@link Class Classes}, which must be
 	 * subclasses of {@link Throwable}, indicating which exception types must
 	 * <b>not</b> cause a transaction rollback.
