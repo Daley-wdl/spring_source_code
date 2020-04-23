@@ -36,6 +36,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringValueResolver;
 
 /**
+ * 实现了 BeanFactoryPostProcessor， 在实例化 bean 之前，将已经加载 BeanDefinition 中的占位符修改了
+ *
  * Specialization of {@link PlaceholderConfigurerSupport} that resolves ${...} placeholders
  * within bean definition property values and {@code @Value} annotations against the current
  * Spring {@link Environment} and its set of {@link PropertySources}.

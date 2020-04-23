@@ -44,7 +44,15 @@ import org.springframework.beans.BeansException;
  */
 
 /**
- * 该机制作用于容器启动阶段，允许在容器实例化 Bean 之前对注册到该容器的 BeanDefinition 做出修改。
+ * Spring提供了BeanFactoryPostProcessor的容器拓展机制,该机制允许我们在容器实例化相应对象之前,对注册到容器的BeanDefinition所保存的信息做相应的修改.
+ *
+ * 那我们有哪些实际场景有运用到这个拓展呢?
+ * 比如我们配置数据库信息,经常用到占位符
+ *     ${jdbc.url}
+ * 当BeanFactory在第一阶段加载完成所有配置信息时,保存的对象的属性信息还只是以占位符的形式存在.
+ * 这个解析的工作是在 {@link org.springframework.context.support.PropertySourcesPlaceholderConfigurer} 中做的,我们来看看继承体系图就明白了.
+ *
+ *
  */
 @FunctionalInterface
 public interface BeanFactoryPostProcessor {
