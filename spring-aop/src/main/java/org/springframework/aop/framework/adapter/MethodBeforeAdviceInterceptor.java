@@ -52,6 +52,7 @@ public class MethodBeforeAdviceInterceptor implements MethodInterceptor, BeforeA
 
 	@Override
 	public Object invoke(MethodInvocation mi) throws Throwable {
+		// 在执行实际方法之前调用 before 方法
 		this.advice.before(mi.getMethod(), mi.getArguments(), mi.getThis());
 		return mi.proceed();
 	}

@@ -410,7 +410,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			throws BeansException {
 
 		Object result = existingBean;
-		//获取后置处理器遍历
+		//获取后置处理器遍历，（AbstractAutoProxyCreator： 改后置处理器实现代理）
 		for (BeanPostProcessor processor : getBeanPostProcessors()) {
 			Object current = processor.postProcessBeforeInitialization(result, beanName);
 			if (current == null) {
@@ -618,7 +618,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// 对 bean 进行填充，将各个属性值注入，其中，可能存在依赖于其他 bean 的属性
 			// 则会递归初始依赖 bean
 			populateBean(beanName, mbd, instanceWrapper);
-			// 调用初始化方法
+			// 调用初始化方法, (如果需要代理，在这里初始化)
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
@@ -1876,7 +1876,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		Object wrappedBean = bean;
 		if (mbd == null || !mbd.isSynthetic()) {
-			// 后置处理器，初始化前
+			// 后置处理器，初始化前，（AbstractAutoProxyCreator： 改后置处理器实现代理）
 			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 		}
 
