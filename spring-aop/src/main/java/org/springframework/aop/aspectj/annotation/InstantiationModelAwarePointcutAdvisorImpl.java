@@ -34,6 +34,10 @@ import org.springframework.aop.support.Pointcuts;
 import org.springframework.lang.Nullable;
 
 /**
+ * 所有的增强都由 Advisor 的实现类 InstantiationModelAwarePointcutAdvisorImpl 统一封装的。
+ * 在实例初始化的过程中还完成了对于增强器的初始化，根据注解中的信息初始化对应的增强器是在
+ * instantiateAdvice 函数中实现的
+ *
  * Internal implementation of AspectJPointcutAdvisor.
  * Note that there will be one instance of this advisor for each target method.
  *
@@ -219,6 +223,7 @@ final class InstantiationModelAwarePointcutAdvisorImpl
 			this.isAfterAdvice = false;
 		}
 		else {
+			// 根据不同的注解类型封装不同的增强器
 			switch (aspectJAnnotation.getAnnotationType()) {
 				case AtPointcut:
 				case AtAround:

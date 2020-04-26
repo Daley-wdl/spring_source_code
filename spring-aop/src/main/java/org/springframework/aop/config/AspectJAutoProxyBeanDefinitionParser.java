@@ -31,9 +31,6 @@ import org.springframework.lang.Nullable;
  * 解析配置文件时，一旦遇到 aspectj-autoproxy 注解时就会使用解析器
  * AspectJAutoProxyBeanDefinitionParser 进行解析
  *
- * 解析配置文件时，一旦遇到 aspectj-autoproxy 注解时就会使用解析器
- * AspectJAutoProxyBeanDefinitionParser 进行解析
- *
  * {@link BeanDefinitionParser} for the {@code aspectj-autoproxy} tag,
  * enabling the automatic application of @AspectJ-style aspects found in
  * the {@link org.springframework.beans.factory.BeanFactory}.
@@ -44,6 +41,9 @@ import org.springframework.lang.Nullable;
  */
 class AspectJAutoProxyBeanDefinitionParser implements BeanDefinitionParser {
 
+	/**
+	 * 解析 aspectj-autoproxy 把标签
+	 */
 	@Override
 	@Nullable
 	public BeanDefinition parse(Element element, ParserContext parserContext) {

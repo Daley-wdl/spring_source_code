@@ -34,6 +34,9 @@ import org.springframework.core.Ordered;
 import org.springframework.util.ClassUtils;
 
 /**
+ * 这个类实现了 BeanPostProcessor 接口，而实现该接口后，当 Spring 加载这个 Bean 时会在实
+ * 例化前 调用其 postProcessAfterInitialization 方法
+ *
  * {@link org.springframework.aop.framework.autoproxy.AbstractAdvisorAutoProxyCreator}
  * subclass that exposes AspectJ's invocation context and understands AspectJ's rules
  * for advice precedence when multiple pieces of advice come from the same aspect.
