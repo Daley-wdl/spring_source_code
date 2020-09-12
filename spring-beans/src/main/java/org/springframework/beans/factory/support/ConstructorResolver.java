@@ -856,6 +856,7 @@ class ConstructorResolver {
 							"] - did you specify the correct bean references as arguments?");
 				}
 				try {
+					// 该处获取相应 类型或名字 的bean来注入
 					Object autowiredArgument = resolveAutowiredArgument(
 							methodParam, beanName, autowiredBeanNames, converter, fallback);
 					args.rawArguments[paramIndex] = autowiredArgument;
@@ -953,6 +954,7 @@ class ConstructorResolver {
 			return injectionPoint;
 		}
 		try {
+			// 从工厂里查找依赖
 			return this.beanFactory.resolveDependency(
 					new DependencyDescriptor(param, true), beanName, autowiredBeanNames, typeConverter);
 		}
@@ -960,6 +962,7 @@ class ConstructorResolver {
 			throw ex;
 		}
 		catch (NoSuchBeanDefinitionException ex) {
+			// 注意 如果工厂里没有指定的依赖，那么 array、list、map 都是可以返回默认类型，spring可以启动；但是其他类型，比如string则会抛出异常 NoSuchBean
 			if (fallback) {
 				// Single constructor or factory method -> let's return an empty array/collection
 				// for e.g. a vararg or a non-null List/Set/Map parameter.

@@ -268,14 +268,19 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 		}
 
 		// Quick check on the concurrent map first, with minimal locking.
+		//先查找缓存
 		Constructor<?>[] candidateConstructors = this.candidateConstructorsCache.get(beanClass);
+		//若是缓存中没有
 		if (candidateConstructors == null) {
 			// Fully synchronized resolution now...
+			// 同步此方法
 			synchronized (this.candidateConstructorsCache) {
 				candidateConstructors = this.candidateConstructorsCache.get(beanClass);
+				//双重判断，避免多线程并发问题
 				if (candidateConstructors == null) {
 					Constructor<?>[] rawCandidates;
 					try {
+						// 获取此Bean的所有构造器
 						rawCandidates = beanClass.getDeclaredConstructors();
 					}
 					catch (Throwable ex) {
@@ -283,8 +288,11 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 								"Resolution of declared constructors on bean Class [" + beanClass.getName() +
 								"] from ClassLoader [" + beanClass.getClassLoader() + "] failed", ex);
 					}
+					// 最终适用的构造器集合
 					List<Constructor<?>> candidates = new ArrayList<>(rawCandidates.length);
+					// 存放依赖注入的required=true的构造器
 					Constructor<?> requiredConstructor = null;
+					// 存放默认构造器
 					Constructor<?> defaultConstructor = null;
 					Constructor<?> primaryConstructor = BeanUtils.findPrimaryConstructor(beanClass);
 					int nonSyntheticConstructors = 0;
@@ -295,7 +303,9 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 						else if (primaryConstructor != null) {
 							continue;
 						}
+						// 查找当前构造器上的注解
 						AnnotationAttributes ann = findAutowiredAnnotation(candidate);
+						//若没有注解
 						if (ann == null) {
 							Class<?> userClass = ClassUtils.getUserClass(beanClass);
 							if (userClass != beanClass) {
@@ -309,13 +319,16 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 								}
 							}
 						}
+						//若有注解
 						if (ann != null) {
+							// 已经存在一个required=true的构造器了，抛出异常
 							if (requiredConstructor != null) {
 								throw new BeanCreationException(beanName,
 										"Invalid autowire-marked constructor: " + candidate +
 										". Found constructor with 'required' Autowired annotation already: " +
 										requiredConstructor);
 							}
+							// 判断此注解上的required属性
 							boolean required = determineRequiredStatus(ann);
 							if (required) {
 								if (!candidates.isEmpty()) {
@@ -324,18 +337,25 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 											". Found constructor with 'required' Autowired annotation: " +
 											candidate);
 								}
+								// 将当前构造器加入requiredConstructor集合
 								requiredConstructor = candidate;
 							}
+							// 加入适用的构造器集合中
 							candidates.add(candidate);
 						}
+						// 如果该构造函数上没有注解，再判断构造函数上的参数个数是否为0
 						else if (candidate.getParameterCount() == 0) {
+							// 如果没有参数，加入defaultConstructor集合
 							defaultConstructor = candidate;
 						}
 					}
+					// 适用的构造器集合若不为空
 					if (!candidates.isEmpty()) {
 						// Add default constructor to list of optional constructors, as fallback.
+						// 若没有required=true的构造器
 						if (requiredConstructor == null) {
 							if (defaultConstructor != null) {
+								// 将defaultConstructor集合的构造器加入适用构造器集合
 								candidates.add(defaultConstructor);
 							}
 							else if (candidates.size() == 1 && logger.isInfoEnabled()) {
@@ -345,25 +365,49 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 										"default constructor to fall back to: " + candidates.get(0));
 							}
 						}
+						// 将适用构造器集合赋值给将要返回的构造器集合
 						candidateConstructors = candidates.toArray(new Constructor<?>[0]);
 					}
+
+					/**
+					 * 核心代码我们可以看出几个要点：
+					 *
+					 * 在没有@Autowired注解的情况下：
+					 * 		无参构造器将直接加入defaultConstructor集合中。
+					 * 		在构造器数量只有一个且有参数时，此唯一有参构造器将加入candidateConstructors集合中。
+					 * 		在构造器数量有两个的时候，并且存在无参构造器，将defaultConstructor（第一条的无参构造器）放入candidateConstructors集合中。
+					 * 		在构造器数量大于两个，并且存在无参构造器的情况下，将返回一个空的candidateConstructors集合，也就是没有找到构造器。
+					 * 在有@Autowired注解的情况下：
+					 * 	   判断required属性：
+					 * 	   	    true：先判断requiredConstructor集合是否为空，若不为空则代表之前已经有一个required=true的构造器了，两个true将抛出异常，再判断candidates集合是否为空，若不为空则表示之前已经有一个打了注解的构造器，此时required又是true，抛出异常。若两者都不为空将放入requiredConstructor集合中，再放入candidates集合中。
+					 * 	   	    false：直接放入candidates集合中。
+					 * 	   判断requiredConstructor集合是否为空（是否存在required=true的构造器），若没有，将默认构造器也放入candidates集合中。
+					 * 	   最后将上述candidates赋值给最终返回的candidateConstructors集合。
+					 */
+					// 如果适用的构造器集合为空，且Bean只有一个构造器并且此构造器参数数量大于0
 					else if (rawCandidates.length == 1 && rawCandidates[0].getParameterCount() > 0) {
+						// 就使用此构造器来初始化
 						candidateConstructors = new Constructor<?>[] {rawCandidates[0]};
 					}
+					// 如果构造器有两个，且默认构造器不为空
 					else if (nonSyntheticConstructors == 2 && primaryConstructor != null &&
 							defaultConstructor != null && !primaryConstructor.equals(defaultConstructor)) {
+						// 使用默认构造器返回
 						candidateConstructors = new Constructor<?>[] {primaryConstructor, defaultConstructor};
 					}
 					else if (nonSyntheticConstructors == 1 && primaryConstructor != null) {
 						candidateConstructors = new Constructor<?>[] {primaryConstructor};
 					}
 					else {
+						// 上述都不符合的话，只能返回一个空集合了
 						candidateConstructors = new Constructor<?>[0];
 					}
+					// 放入缓存，方便下一次调用
 					this.candidateConstructorsCache.put(beanClass, candidateConstructors);
 				}
 			}
 		}
+		//返回candidateConstructors集合，若为空集合返回null
 		return (candidateConstructors.length > 0 ? candidateConstructors : null);
 	}
 
