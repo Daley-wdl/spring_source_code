@@ -222,11 +222,15 @@ public abstract class AopUtils {
 	 */
 	public static boolean canApply(Pointcut pc, Class<?> targetClass, boolean hasIntroductions) {
 		Assert.notNull(pc, "Pointcut must not be null");
+		// 获取切点类过滤器，如果不符合直接返回false
+		// 如果符合进入下一步判断
 		if (!pc.getClassFilter().matches(targetClass)) {
 			return false;
 		}
 
+		// 获取切点的方法匹配器
 		MethodMatcher methodMatcher = pc.getMethodMatcher();
+		// 如果此时methodMatcher是一个MethodMatcher.TRUE，说明匹配任何方法，直接返回true
 		if (methodMatcher == MethodMatcher.TRUE) {
 			// No need to iterate the methods if we're matching any method anyway...
 			return true;
@@ -237,7 +241,7 @@ public abstract class AopUtils {
 			introductionAwareMethodMatcher = (IntroductionAwareMethodMatcher) methodMatcher;
 		}
 
-		// 获取 bean 目标类和所有接口，放到集合
+		// 拿到目标类的所有父类（包括接口）
 		Set<Class<?>> classes = new LinkedHashSet<>();
 		if (!Proxy.isProxyClass(targetClass)) {
 			classes.add(ClassUtils.getUserClass(targetClass));
@@ -248,6 +252,7 @@ public abstract class AopUtils {
 		for (Class<?> clazz : classes) {
 			Method[] methods = ReflectionUtils.getAllDeclaredMethods(clazz);
 			for (Method method : methods) {
+				// 两个验证器只要其中一个匹配，就返回true
 				if (introductionAwareMethodMatcher != null ?
 						introductionAwareMethodMatcher.matches(method, targetClass, hasIntroductions) :
 						methodMatcher.matches(method, targetClass)) {
@@ -286,11 +291,15 @@ public abstract class AopUtils {
 	public static boolean canApply(Advisor advisor, Class<?> targetClass, boolean hasIntroductions) {
 		// 处理引入
 		if (advisor instanceof IntroductionAdvisor) {
+			// 调用引介增强器的ClassFilter去匹配当前Bean是否适合
 			return ((IntroductionAdvisor) advisor).getClassFilter().matches(targetClass);
 		}
 		// 处理 PointcutAdvisor，是指有切入点的 Advisor
 		else if (advisor instanceof PointcutAdvisor) {
+			// 如果是普通的Advisor，转换成PointcutAdvisor
+			// PointcutAdvisor 接口定义了获取切点的方法getPointcut
 			PointcutAdvisor pca = (PointcutAdvisor) advisor;
+			// 根据切点信息，寻找是否适合
 			return canApply(pca.getPointcut(), targetClass, hasIntroductions);
 		}
 		else {
@@ -314,8 +323,9 @@ public abstract class AopUtils {
 		}
 		List<Advisor> eligibleAdvisors = new ArrayList<>();
 		for (Advisor candidate : candidateAdvisors) {
-			// 首先处理引介增强
+			// 在这里会优先处理引介增强，并且判断Advisor是否适合此Bean
 			if (candidate instanceof IntroductionAdvisor && canApply(candidate, clazz)) {
+				// 优先加入List中
 				eligibleAdvisors.add(candidate);
 			}
 		}
@@ -323,13 +333,15 @@ public abstract class AopUtils {
 		for (Advisor candidate : candidateAdvisors) {
 			if (candidate instanceof IntroductionAdvisor) {
 				// already processed
+				// 已经处理过引介增强
 				continue;
 			}
-			// 对于普通 bean 的处理
+			// 剩下的Advisor再进行判断
 			if (canApply(candidate, clazz, hasIntroductions)) {
 				eligibleAdvisors.add(candidate);
 			}
 		}
+		// 返回适合的Advisor List
 		return eligibleAdvisors;
 	}
 

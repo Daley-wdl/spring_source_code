@@ -1433,6 +1433,8 @@ public abstract class AnnotationUtils {
 			return null;
 		}
 		try {
+			//获取切点方法名，也就是注解上设置的，例如@Before("test()")
+			//此时获取"test()"这样的字符串
 			Method method = annotation.annotationType().getDeclaredMethod(attributeName);
 			ReflectionUtils.makeAccessible(method);
 			return method.invoke(annotation);

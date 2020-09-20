@@ -74,6 +74,8 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 
 
 	/**
+	 * 继续获取被注解了的Advisor
+	 *
 	 * 1）遍历所有 beanName，所有在 beanFactory 中注册的 bean 都会被提取出来
 	 * 2）遍历所有 beanName，找出声明@Aspect 注解的类，进行进一步的处理
 	 * 3）对标记为 AspectJ 注解的类进行增强的提取
@@ -114,7 +116,9 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 						if (this.advisorFactory.isAspect(beanType)) {
 							aspectNames.add(beanName);
 							AspectMetadata amd = new AspectMetadata(beanType, beanName);
+							// 如果是单例，说明可以缓存下来
 							if (amd.getAjType().getPerClause().getKind() == PerClauseKind.SINGLETON) {
+								// 封装成一个对象
 								MetadataAwareAspectInstanceFactory factory =
 										new BeanFactoryAspectInstanceFactory(this.beanFactory, beanName);
 								// 解析标记@Aspect 中的增强方法
@@ -122,6 +126,8 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 								if (this.beanFactory.isSingleton(beanName)) {
 									this.advisorsCache.put(beanName, classAdvisors);
 								}
+								// 如果不是，只缓存factory，待下一次进入取出缓存的factory
+								// 然后再用advisorFactory创建一次Advisor，省去寻找Bean与创建factory的麻烦
 								else {
 									this.aspectFactoryCache.put(beanName, factory);
 								}
@@ -146,16 +152,21 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 			}
 		}
 
+		// 如果走到这里，说明已经找过一遍了，这里从缓存获取信息
 		if (aspectNames.isEmpty()) {
 			return Collections.emptyList();
 		}
 		// 记录在缓存中
 		List<Advisor> advisors = new ArrayList<>();
+		// 遍历所有缓存的切面名
 		for (String aspectName : aspectNames) {
 			List<Advisor> cachedAdvisors = this.advisorsCache.get(aspectName);
+			// 如果可以拿到，直接获取
 			if (cachedAdvisors != null) {
 				advisors.addAll(cachedAdvisors);
 			}
+			// 如果拿不到，说明此时缓存的是factory
+			// 根据factory使用advisorFactory创建Advisor
 			else {
 				MetadataAwareAspectInstanceFactory factory = this.aspectFactoryCache.get(aspectName);
 				advisors.addAll(this.advisorFactory.getAdvisors(factory));

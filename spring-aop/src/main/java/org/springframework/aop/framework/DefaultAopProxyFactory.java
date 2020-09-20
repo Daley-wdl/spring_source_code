@@ -48,6 +48,12 @@ public class DefaultAopProxyFactory implements AopProxyFactory, Serializable {
 
 	@Override
 	public AopProxy createAopProxy(AdvisedSupport config) throws AopConfigException {
+		// 判断ProxyTargetClass属性和是否有代理接口等等判断使用何种方式做代理
+		/**
+		 * optimize：这个属性适用于CGLib，对JDK动态代理无效。主要是控制CGLib创建的代理是否使用激进的优化策略。
+		 * proxyTargetClass：文章开头也有提到，如果属性为true，将会使用CGLib进行代理。
+		 * hasNoUserSuppliedProxyInterfaces：是否存在代理接口。
+		 */
 		if (config.isOptimize() || config.isProxyTargetClass() || hasNoUserSuppliedProxyInterfaces(config)) {
 			Class<?> targetClass = config.getTargetClass();
 			if (targetClass == null) {

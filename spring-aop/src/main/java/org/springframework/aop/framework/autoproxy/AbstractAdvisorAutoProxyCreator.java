@@ -75,6 +75,7 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	protected Object[] getAdvicesAndAdvisorsForBean(
 			Class<?> beanClass, String beanName, @Nullable TargetSource targetSource) {
 
+		// 寻找适合的Advisor
 		List<Advisor> advisors = findEligibleAdvisors(beanClass, beanName);
 		if (advisors.isEmpty()) {
 			return DO_NOT_PROXY;
@@ -97,7 +98,16 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	 * @see #extendAdvisors
 	 */
 	protected List<Advisor> findEligibleAdvisors(Class<?> beanClass, String beanName) {
+		// 寻找所有适用的Advisor
 		List<Advisor> candidateAdvisors = findCandidateAdvisors();
+		// 从所有Advisor中选出适合被当前Bean使用的Advisor
+
+		/**
+		 * 当一个Bean中的任何一个方法（方法包括在父类中的方法）匹配Advisor中的切点信息，就认为当前的Advisor是匹配当前Bean的，
+		 * 就将此时的Advisor加入此类的Advisors列表中，注意，一个Bean中是可以有多个Advisor的，如果不能理解为什么一个Bean对应多个Advisor，
+		 * 你应该还没有明白Advisor的概念，Advisor中包含advice与切点信息，也就是说，一个通知方法例如前置通知@Before是对应一个Advisor的，
+		 * 如果一个类中既有前置通知又有后置通知，那么这个类中的Advisor是会匹配两个的。
+		 */
 		List<Advisor> eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName);
 		extendAdvisors(eligibleAdvisors);
 		if (!eligibleAdvisors.isEmpty()) {
@@ -130,6 +140,7 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 
 		ProxyCreationContext.setCurrentProxiedBeanName(beanName);
 		try {
+			// 委派AopUtils去做
 			return AopUtils.findAdvisorsThatCanApply(candidateAdvisors, beanClass);
 		}
 		finally {

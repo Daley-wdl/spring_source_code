@@ -296,6 +296,10 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	public Object postProcessAfterInitialization(@Nullable Object bean, String beanName) {
 		if (bean != null) {
 			Object cacheKey = getCacheKey(bean.getClass(), beanName);
+
+			//判断是否是过早暴露的Bean，此概念在IOC解决循环依赖中有提到
+			//如果是过早暴露的Bean，则此时连依赖注入都没有完成，则不对其进行代理
+			//待其真正初始化之后再尝试代理
 			if (this.earlyProxyReferences.remove(cacheKey) != bean) {
 				// 该方法用来生来生成代理类
 				return wrapIfNecessary(bean, beanName, cacheKey);
@@ -329,6 +333,9 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	/**
 	 * 该类是否符合条件去代理
 	 *
+	 * 		1、如何寻找符合Bean的增强器
+	 * 		2、如何对Bean创建动态代理
+	 *
 	 * Wrap the given bean if necessary, i.e. if it is eligible for being proxied.
 	 * @param bean the raw bean instance
 	 * @param beanName the name of the bean
@@ -336,15 +343,15 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	 * @return a proxy wrapping the bean, or the raw bean instance as-is
 	 */
 	protected Object wrapIfNecessary(Object bean, String beanName, Object cacheKey) {
-		// 如果已经处理过
+		// 如果已经处理过，不进行处理
 		if (StringUtils.hasLength(beanName) && this.targetSourcedBeans.contains(beanName)) {
 			return bean;
 		}
-		// 无需增强
+		// 如果此Bean已经被标记为无法代理，不进行处理
 		if (Boolean.FALSE.equals(this.advisedBeans.get(cacheKey))) {
 			return bean;
 		}
-		// 给定的 bean 类是否代表一个基础设施类，基础设施类不应代理，或者配置了指定 bean 不需要自动代理
+		// 如果Bean为AOP类的类型，基础设施类不应代理，或者配置了指定 bean 不需要自动代理
 		if (isInfrastructureClass(bean.getClass()) || shouldSkip(bean.getClass(), beanName)) {
 			this.advisedBeans.put(cacheKey, Boolean.FALSE);
 			return bean;
@@ -474,23 +481,27 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		// 获取当前类中的属性
 		proxyFactory.copyFrom(this);
 
-		// 添加代理接口
+		// 如果proxyTargetClass是false才会进入判断
+		// 如果proxyTargetClass是true就直接用CGLib代理了，不需要判断
 		if (!proxyFactory.isProxyTargetClass()) {
+			// 判断是否需要代理本类
 			if (shouldProxyTargetClass(beanClass, beanName)) {
 				proxyFactory.setProxyTargetClass(true);
 			}
 			else {
-				// 添加代理
+				// 如果不需要，则获取所有该类的接口，设置到proxyFactory对象中
 				evaluateProxyInterfaces(beanClass, proxyFactory);
 			}
 		}
 
-		// 封装 Advisor 并加入到 ProxyFactory 中
+		// 处理所有得到的适用的拦截器转换成Advisor
 		Advisor[] advisors = buildAdvisors(beanName, specificInterceptors);
+		// 将Advisors加入proxyFactory对象中
 		proxyFactory.addAdvisors(advisors);
 
-		//设置 proxyFactory 的 target 要代理的类
+		// 将原本的Bean对象（原生未代理）加入proxyFactory对象中
 		proxyFactory.setTargetSource(targetSource);
+		// 定制代理
 		customizeProxyFactory(proxyFactory);
 
 		proxyFactory.setFrozen(this.freezeProxy);

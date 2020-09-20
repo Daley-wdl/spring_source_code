@@ -132,8 +132,10 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 	protected static AspectJAnnotation<?> findAspectJAnnotationOnMethod(Method method) {
 		// 寻找特定的注解类
 		for (Class<?> clazz : ASPECTJ_ANNOTATION_CLASSES) {
+			// 将每个需要关注的类型都与方法进行匹配
 			AspectJAnnotation<?> foundAnnotation = findAnnotation(method, (Class<Annotation>) clazz);
 			if (foundAnnotation != null) {
+				// 如果找到，返回
 				return foundAnnotation;
 			}
 		}
@@ -142,8 +144,12 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 
 	@Nullable
 	private static <A extends Annotation> AspectJAnnotation<A> findAnnotation(Method method, Class<A> toLookFor) {
+		// 根据指定的类型寻找方法上的注解
 		A result = AnnotationUtils.findAnnotation(method, toLookFor);
 		if (result != null) {
+			// 如果找到了，将其封装为AspectJAnnotation对象返回
+			// 寻找注解的时候仅仅是获取了例如@Before(“test()”)中的test()这样的切点方法名信息，
+			// 这个过程在封装AspectJAnnotation对象时在构造函数完成
 			return new AspectJAnnotation<>(result);
 		}
 		else {
@@ -194,6 +200,7 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 			this.annotation = annotation;
 			this.annotationType = determineAnnotationType(annotation);
 			try {
+				// 处理注解上的pointcut信息
 				this.pointcutExpression = resolveExpression(annotation);
 				Object argNames = AnnotationUtils.getValue(annotation, "argNames");
 				this.argumentNames = (argNames instanceof String ? (String) argNames : "");
@@ -212,6 +219,7 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 		}
 
 		private String resolveExpression(A annotation) {
+			// 遍历获取注解中的两个方法名：value和pointcut
 			for (String attributeName : EXPRESSION_ATTRIBUTES) {
 				Object val = AnnotationUtils.getValue(annotation, attributeName);
 				if (val instanceof String) {
