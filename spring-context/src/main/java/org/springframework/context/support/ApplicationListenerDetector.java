@@ -30,6 +30,9 @@ import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.util.ObjectUtils;
 
 /**
+ * 该类是一个 BeanPostProcessor, 用于在初始化的时候把 ApplicationListener（监听器）添加到 AbstractApplicationContdxt 中，
+ * 在 AbstractAutowireCapableBeanFactory 里面创建bean的时候，初始化时会调用
+ *
  * {@code BeanPostProcessor} that detects beans which implement the {@code ApplicationListener}
  * interface. This catches beans that can't reliably be detected by {@code getBeanNamesForType}
  * and related operations which only work against top-level beans.
@@ -66,6 +69,9 @@ class ApplicationListenerDetector implements DestructionAwareBeanPostProcessor, 
 		return bean;
 	}
 
+	/**
+	 * 添加监听器
+	 */
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) {
 		if (bean instanceof ApplicationListener) {
