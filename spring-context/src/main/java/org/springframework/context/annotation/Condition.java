@@ -20,6 +20,14 @@ import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 /**
+ * condition 接口，用于条件注入，在 Spring4 的版本，正式出现 Condition 功能，
+ * 	究竟 Condition 是如何生效的呢？分成两种情况：
+ *
+ * 	方式一，配置类。添加到配置类（Configuration）上面。
+ * 	方式二，创建 Bean 对象。添加到配置类（Configuration）、或者 Bean Class 的上面
+ *
+ * spring-boot 通过继承该接口来扩展条件注入，SpringBootCondition 接口
+ *
  * A single {@code condition} that must be {@linkplain #matches matched} in order
  * for a component to be registered.
  *

@@ -27,6 +27,8 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Profiles;
 
 /**
+ * 在 Spring3.1 的版本，为了满足不同环境注册不同的 Bean ，引入了 @Profile 注解，可以作为是 Condition 的雏形。
+ *
  * Indicates that a component is eligible for registration when one or more
  * {@linkplain #value specified profiles} are active.
  *

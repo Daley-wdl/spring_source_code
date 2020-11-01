@@ -23,6 +23,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 该注解用来配合 condition 实现类做条件注入
+ *
  * Indicates that a component is only eligible for registration when all
  * {@linkplain #value specified conditions} match.
  *
