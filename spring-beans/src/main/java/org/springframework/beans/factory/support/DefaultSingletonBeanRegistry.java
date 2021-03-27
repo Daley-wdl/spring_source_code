@@ -183,7 +183,8 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
 			// 加锁
 			synchronized (this.singletonObjects) {
-				// 从 earlySingletonObjects 获取
+				// 从 earlySingletonObjects 获取, 这里缓存的是三级缓存创建出来的对象，保证三级缓存只会被调用一次，防止重复创建
+				// 三级缓存可能会生成代理
 				singletonObject = this.earlySingletonObjects.get(beanName);
 				// earlySingletonObjects 中没有，且允许提前创建
 				if (singletonObject == null && allowEarlyReference) {
